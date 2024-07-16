@@ -78,21 +78,11 @@ workflows:
             - start-build
       - approval:
           type: approval
-          name: dev-approval
-          requires:
-            - build
-      - deploy:
-          name: dev-deploy
-          environment: dev
-          requires:
-            - dev-approval       
-      - approval:
-          type: approval
           name: prod-approval
           requires:
-            - dev-deploy
+            - build
       - deploy:
           name: prod-deploy
           environment: prod
           requires:
-            - prod-approval  
+            - prod-approval
