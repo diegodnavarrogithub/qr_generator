@@ -17,7 +17,7 @@ Globals:
     Runtime: python3.11
     Handler: app.lambda_handler
     Layers:
-      - !Ref QR_Util_Layer
+      - !Ref QRUtilLayer
     Environment:
       Variables:
         ENV_NAME: !Ref EnvNameParam
@@ -35,7 +35,7 @@ Resources:
     Properties:
       CodeUri: lambdas/generate_qr/
       Layers:
-        - !Ref QR_Util_Layer
+        - !Ref QRUtilLayer
       Environment:
         Variables:
           BUCKET_NAME: !Ref S3BUCKETDB
@@ -63,7 +63,7 @@ Resources:
             Path: /redirect/{qr_id}
             Method: get
 
-  QR_Util_Layer:
+  QRUtilLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
       LayerName: QR-Utility
