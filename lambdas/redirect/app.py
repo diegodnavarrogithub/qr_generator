@@ -16,7 +16,10 @@ def lambda_handler(event, context):
     try:
         response = s3.get_object(Bucket=BUCKET, Key=KEY)
         all_data = json.loads(response['Body'])
+
+        # Logging info
         logging.info(json.dumps(all_data, indent=2))
+
 
         data = all_data[_id]
         url = data["URL"]
@@ -25,6 +28,7 @@ def lambda_handler(event, context):
         data['LastAccessedAt'] = now.strftime("%Y-%m-%d")
         s3.put_object(Bucket=BUCKET, Key=KEY, Body=json.dumps(all_data))
 
+        # Logging info
         logging.info(json.dumps(all_data, indent=2))
         return {
             'statusCode': 302,
