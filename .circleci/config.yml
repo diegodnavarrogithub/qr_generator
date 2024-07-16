@@ -51,7 +51,10 @@ jobs:
           command: ls
       - run:
           name: Show ls layer/
-          command: ls
+          command: ls layer/
+      - run:
+          name: Build SAM project
+          command: sam build --template-file template.yaml
       - run:
           name: Build SAM project
           command: sam build --template-file template.yaml
