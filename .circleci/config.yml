@@ -22,18 +22,6 @@ jobs:
       - run:
           name: Update pip
           command: pip install --upgrade pip
-      - run:
-          name: Check for requirements.txt
-          command: |
-            if [ -e requirements.txt ]; then
-              pip install -r requirements.txt
-            else
-              echo "No requirements.txt file found. Skipping dependency installation."
-            fi
-      - save_cache:
-          key: v1-dependencies-{{ checksum "requirements.txt" }}
-          paths:
-            - ~/.cache/pip
   deploy:
     docker:
       - image: cimg/python:3.11
