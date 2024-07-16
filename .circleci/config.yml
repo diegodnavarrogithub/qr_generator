@@ -51,7 +51,7 @@ jobs:
           command: ls
       - run:
           name: Show ls layer/
-          command: ls
+          command: ls layer/
       - run:
           name: Build SAM project
           command: sam build --template-file template.yaml
@@ -61,6 +61,9 @@ jobs:
       - run:
           name: Show ls
           command: ls
+      - run:
+          name: Build SAM project
+          command: sam build --template-file template.yaml
       - run:
           name: Deploy SAM project
           command: sam deploy --stack-name qr-generator-<< parameters.environment >> --region us-east-1 --capabilities CAPABILITY_IAM --parameter-overrides EnvNameParam=<< parameters.environment >> S3BUCKETDB=s3-bucket-qr-database S3KEYDB=qr_database.json --s3-bucket qrcreator-stack-bucket --no-fail-on-empty-changeset --no-confirm-changeset
