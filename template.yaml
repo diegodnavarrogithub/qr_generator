@@ -66,11 +66,12 @@ Resources:
   QRUtilLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
-      LayerName: QR-Utility
+      LayerName: QRUtility
       Description: QR dependencies
       ContentUri: layer
       CompatibleRuntimes:
         - python3.11
+        - python3.10
       RetentionPolicy: Delete
     Metadata:
       BuildMethod: makefile
