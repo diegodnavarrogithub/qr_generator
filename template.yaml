@@ -34,8 +34,6 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: lambdas/generate_qr/
-      Layers:
-        - !Ref QRUtilLayer
       Environment:
         Variables:
           BUCKET_NAME: !Ref S3BUCKETDB

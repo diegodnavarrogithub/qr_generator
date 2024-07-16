@@ -56,12 +56,6 @@ jobs:
           name: Build SAM project
           command: sam build --template-file template.yaml
       - run:
-          name: Show pwd
-          command: pwd
-      - run:
-          name: Show ls
-          command: ls
-      - run:
           name: Build SAM project
           command: sam build --template-file template.yaml
       - run:
