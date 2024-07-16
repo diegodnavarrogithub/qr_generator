@@ -68,7 +68,7 @@ Resources:
     Properties:
       LayerName: QR-Utility
       Description: QR dependencies
-      ContentUri: layer/
+      ContentUri: layer
       CompatibleRuntimes:
         - python3.11
       RetentionPolicy: Delete
