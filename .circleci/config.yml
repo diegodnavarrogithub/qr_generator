@@ -1,0 +1,98 @@
+version: 2.1
+
+orbs:
+  aws-cli: circleci/aws-cli@4.1.3
+
+jobs:
+  build:
+    working_directory: ~/project
+    docker:
+      - image: cimg/python:3.11
+    resource_class: small
+    steps:
+      - checkout
+      - aws-cli/setup:
+          role_arn: arn:aws:iam::683643664517:role/circlecioidc
+          region: us-east-1
+      - run:
+          name: install SAM
+          command: pip install aws-sam-cli
+      - setup_remote_docker:
+          version: 20.10.18
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "requirements.txt" }}
+            - v1-dependencies-default
+      - run:
+          name: Update pip
+          command: pip install --upgrade pip
+      - run:
+          name: Check for requirements.txt
+          command: |
+            if [ -e requirements.txt ]; then
+              pip install -r requirements.txt
+            else
+              echo "No requirements.txt file found. Skipping dependency installation."
+            fi
+      - save_cache:
+          key: v1-dependencies-{{ checksum "requirements.txt" }}
+          paths:
+            - ~/.cache/pip
+  deploy:
+    docker:
+      - image: cimg/python:3.11
+    resource_class: small
+    parameters:
+      environment:
+        description: Name of environment
+        type: string
+    steps:
+      - checkout
+      - aws-cli/setup:
+          role_arn: arn:aws:iam::683643664517:role/circlecioidc
+          region: us-east-1
+      - run:
+          name: install SAM
+          command: pip install aws-sam-cli
+      - setup_remote_docker:
+          version: 20.10.18
+      - run:
+          name: Validate SAM template
+          command: sam validate
+      - run:
+          name: Build SAM project
+          command: sam build --template-file template.yaml
+      - run:
+          name: Deploy SAM project
+          command: sam deploy --stack-name qr-generator-<< parameters.environment >> --region us-east-1 --capabilities CAPABILITY_IAM --parameter-overrides EnvNameParam=<< parameters.environment >> S3BUCKETDB=s3-bucket-qr-database S3KEYDB=qr_database.json --s3-bucket mock-proj-bucket --no-fail-on-empty-changeset --no-confirm-changeset
+
+workflows:
+  build-workflow:
+    jobs:
+      - approval:
+          type: approval
+          name: start-build
+      - build:
+          name: build
+          requires:
+            - start-build
+      - approval:
+          type: approval
+          name: dev-approval
+          requires:
+            - build
+      - deploy:
+          name: dev-deploy
+          environment: dev
+          requires:
+            - dev-approval       
+      - approval:
+          type: approval
+          name: prod-approval
+          requires:
+            - dev-deploy
+      - deploy:
+          name: prod-deploy
+          environment: prod
+          requires:
+            - prod-approval  

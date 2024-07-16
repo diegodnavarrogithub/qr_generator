@@ -1,0 +1,84 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+  EnvNameParam:
+    Type: String
+    Description: "The environment name"
+  S3BUCKETDB:
+    Type: String
+    Description: "The S3 bucket name for the database"
+  S3KEYDB:
+    Type: String
+    Description: "The S3 key for the database"
+
+Globals:
+  Function:
+    Runtime: python3.11
+    Handler: app.lambda_handler
+    Layers:
+      - !Ref QR_Util_Layer
+    Environment:
+      Variables:
+        ENV_NAME: !Ref EnvNameParam
+        BUCKET_NAME: !Ref S3BUCKETDB
+        S3_KEY: !Ref S3KEYDB
+
+Resources:
+  QrCodeBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: s3-bucket-qr-database
+
+  GenerateQrFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambdas/generate_qr/
+      Layers:
+        - !Ref QR_Util_Layer
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref S3BUCKETDB
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref S3BUCKETDB
+      Events:
+        GenerateQrApi:
+          Type: Api
+          Properties:
+            Path: /generate
+            Method: post
+
+  RedirectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambdas/redirect/
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Ref S3BUCKETDB
+      Events:
+        RedirectApi:
+          Type: Api
+          Properties:
+            Path: /redirect/{qr_id}
+            Method: get
+
+  QR_Util_Layer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: QR-Utility
+      Description: QR dependencies
+      ContentUri: layer/
+      CompatibleRuntimes:
+        - python3.11
+      RetentionPolicy: Delete
+    Metadata:
+      BuildMethod: makefile
+
+Outputs:
+  GenerateQrApi:
+    Description: "API Gateway endpoint URL for Generate QR Code function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/generate/"
+  RedirectApi:
+    Description: "API Gateway endpoint URL for Redirect function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/redirect/"
