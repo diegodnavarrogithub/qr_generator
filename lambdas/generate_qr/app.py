@@ -4,7 +4,7 @@ import os
 from datetime import datetime
 
 import boto3
-import qr_utils
+from utils import generate_qr_code
 
 
 def lambda_hanlder(event, context):
@@ -36,6 +36,6 @@ def lambda_hanlder(event, context):
     return {
         'statusCode': 200,
         'body': json.dumps({
-            'qr_image': qr_utils.generate_qr_code(domain_url)
+            'qr_image': generate_qr_code(domain_url)
         })
     }
