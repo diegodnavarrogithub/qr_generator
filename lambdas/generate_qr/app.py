@@ -7,7 +7,7 @@ import boto3
 from utils import generate_qr_code
 
 
-def lambda_hanlder(event, context):
+def lambda_handler(event, context):
     data = json.loads(event['body'])
     destination_url = data['destination_url']
     now = datetime.now()
