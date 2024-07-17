@@ -7,8 +7,8 @@ import boto3
 
 
 def lambda_handler(event, context):
-    BUCKET = os.getenv("S3BUCKETDB")
-    KEY = os.getenv("S3KEYDB")
+    BUCKET = os.getenv("BUCKET_NAME")
+    KEY = os.getenv("S3_KEY")
     s3 = boto3.client('s3')
     _id = event['pathParameters']['id']
     now = datetime.now()

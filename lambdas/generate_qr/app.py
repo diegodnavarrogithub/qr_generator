@@ -12,8 +12,8 @@ def lambda_handler(event, context):
     destination_url = data['destination_url']
     now = datetime.now()
     domain_url = f"{data['domain_url']}/redirect/{now}"
-    BUCKET = os.getenv("S3BUCKETDB")
-    KEY = os.getenv("S3KEYDB")
+    BUCKET = os.getenv("BUCKET_NAME")
+    KEY = os.getenv("S3_KEY")
     s3 = boto3.client('s3')
     _id = now.strftime("%Y-%m-%d-%H:%M:&S.%f")
     metadata = {
