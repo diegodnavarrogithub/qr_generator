@@ -23,6 +23,11 @@ Globals:
         ENV_NAME: !Ref EnvNameParam
         BUCKET_NAME: !Ref S3BUCKETDB
         S3_KEY: !Ref S3KEYDB
+  Api:
+    Cors:
+      AllowMethods: "'POST,OPTIONS,GET'"
+      AllowHeaders: "'Content-Type'"
+      AllowOrigin: "'*'"
 
 Resources:
   QrCodeBucket:
@@ -30,15 +35,6 @@ Resources:
     Properties:
       BucketName: s3-bucket-qr-database
     
-  GenerateQrApi:
-    Type: AWS::Serverless::Api
-    Properties:
-      StageName: Prod
-      Cors:
-        AllowMethods: "'OPTIONS,POST,GET'"
-        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-        AllowOrigin: "'*'"
-
   GenerateQrFunction:
     Type: AWS::Serverless::Function
     Properties:
