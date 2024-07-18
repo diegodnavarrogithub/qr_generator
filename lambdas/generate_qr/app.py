@@ -10,6 +10,7 @@ from utils import generate_qr_code
 def lambda_handler(event, context):
     data = json.loads(event['body'])
     destination_url = data['destination_url']
+    logging.info(data)
     now = datetime.now()
     domain_url = f"{data['domain_url']}/redirect/{now}"
     BUCKET = os.getenv("BUCKET_NAME")
@@ -21,6 +22,7 @@ def lambda_handler(event, context):
         'URL': destination_url,
         'CreatedAt': now.strftime("%Y-%m-%d")
     }
+    logging.info(msg=f"New data for id ({_id}): {metadata}")
     try:
         response = s3.get_object(Bucket=BUCKET, Key=KEY)
         all_metadata = json.loads(response['Body'].read().decode('utf-8'))
