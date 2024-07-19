@@ -10,7 +10,6 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 def lambda_handler(event, context):
-    REDIRURL = os.getenv("REDIRURL")
     data = json.loads(event['body'])
     destination_url = data.get('destination_url')
     if not destination_url:
