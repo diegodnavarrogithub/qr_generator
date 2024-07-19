@@ -25,6 +25,19 @@ def lambda_handler(event, context):
             })
         }
 
+    if not destination_url.startswith("http"):
+        logger.error("Destination url needs to start with http:// or https://")
+        return {
+            'statusCode': 400,
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Credentials": True
+                },
+            'body': json.dumps({
+                'error_message': "Destination url needs to start with http:// or https://"
+            })
+        }
+
     logger.info(data)
     now = datetime.now()
     _id = now.strftime("%Y-%m-%d-%H:%M:%S.%f")
