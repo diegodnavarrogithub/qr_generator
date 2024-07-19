@@ -6,6 +6,8 @@ from datetime import datetime
 import boto3
 from utils import generate_qr_code
 
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 def lambda_handler(event, context):
     data = json.loads(event['body'])

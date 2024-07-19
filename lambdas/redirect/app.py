@@ -5,6 +5,8 @@ from datetime import datetime
 
 import boto3
 
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 def lambda_handler(event, context):
     BUCKET = os.getenv("BUCKET_NAME")
