@@ -10,6 +10,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 def lambda_handler(event, context):
+    REDIRURL = os.getenv("REDIRURL")
     data = json.loads(event['body'])
     destination_url = data.get('destination_url')
     if not destination_url:
@@ -41,7 +42,7 @@ def lambda_handler(event, context):
     logger.info(data)
     now = datetime.now()
     _id = now.strftime("%Y-%m-%d-%H:%M:%S.%f")
-    domain_url = f"{data['domain_url']}/redirect/{_id}"
+    domain_url = f"{REDIRURL}/redirect/{_id}"
     BUCKET = os.getenv("BUCKET_NAME")
     KEY = os.getenv("S3_KEY")
     s3 = boto3.client('s3')
