@@ -23,11 +23,13 @@ def lambda_handler(event, context):
         'CreatedAt': now.strftime("%Y-%m-%d")
     }
     logging.info(msg=f"New data for id ({_id}): {metadata}")
+    status_code = 500
     try:
         response = s3.get_object(Bucket=BUCKET, Key=KEY)
         all_metadata = json.loads(response['Body'].read().decode('utf-8'))
         all_metadata[_id] = metadata
         s3.put_object(Bucket=BUCKET, Key=KEY, Body=json.dumps(all_metadata))
+        status_code = 200
 
     except s3.exceptions.NoSuchKey as e:
         logging.error(e)
@@ -36,8 +38,12 @@ def lambda_handler(event, context):
         }))
 
     return {
-        'statusCode': 200,
+        'statusCode': status_code,
+        "headers": {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": True
+            },
         'body': json.dumps({
-            'qr_image': generate_qr_code(domain_url)
+            'qr_image': generate_qr_code(domain_url) if status_code == 200 else "Error generating qr code"
         })
     }
