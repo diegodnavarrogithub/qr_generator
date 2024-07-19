@@ -32,7 +32,7 @@ Resources:
     Properties:
       BucketName: s3-bucket-qr-database
   
-  Api:
+  QrGenratorApi:
     Type: AWS::Serverless::Api
     Properties:
       Name: "QrGeneratorApi"
@@ -58,6 +58,8 @@ Resources:
           Properties:
             Path: /generate
             Method: post
+            RestApiId:
+              Ref: QrGenratorApi
 
   RedirectFunction:
     Type: AWS::Serverless::Function
@@ -72,6 +74,8 @@ Resources:
           Properties:
             Path: /redirect/{qr_id}
             Method: get
+            RestApiId:
+              Ref: QrGenratorApi
 
   QRUtilLayer:
     Type: AWS::Serverless::LayerVersion
