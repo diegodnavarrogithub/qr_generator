@@ -12,7 +12,8 @@ def lambda_handler(event, context):
     BUCKET = os.getenv("BUCKET_NAME")
     KEY = os.getenv("S3_KEY")
     s3 = boto3.client('s3')
-    _id = event['pathParameters']['id']
+    _id = event['queryStringParameters']['id']
+    logging.info(f"Id: {_id}")
     now = datetime.now()
 
     try:
