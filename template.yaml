@@ -17,6 +17,7 @@ Globals:
   Function:
     Runtime: python3.11
     Handler: app.lambda_handler
+    Timeout: 180
     Layers:
       - !Ref QRUtilLayer
     Environment:
