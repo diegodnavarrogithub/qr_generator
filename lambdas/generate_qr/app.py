@@ -11,7 +11,20 @@ logger.setLevel(logging.INFO)
 
 def lambda_handler(event, context):
     data = json.loads(event['body'])
-    destination_url = data['destination_url']
+    destination_url = data.get('destination_url')
+    if not destination_url:
+        logger.error("No destination url was provided")
+        return {
+            'statusCode': 400,
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Credentials": True
+                },
+            'body': json.dumps({
+                'error_message': "No destination url was provided"
+            })
+        }
+
     logger.info(data)
     now = datetime.now()
     _id = now.strftime("%Y-%m-%d-%H:%M:%S.%f")
