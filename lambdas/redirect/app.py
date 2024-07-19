@@ -33,11 +33,17 @@ def lambda_handler(event, context):
         return {
             'statusCode': 302,
             'headers': {
-                'Location': url
+                'Location': url,
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Credentials": True
             }
         }
     except Exception as e:
         return {
             'statusCode': 404,
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Credentials": True
+                },
             'body': json.dumps('QR code not found')
         }
