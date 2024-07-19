@@ -46,9 +46,6 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: lambdas/generate_qr/
-      Environment:
-        Variables:
-          REDIRURL: !Sub "https://${QrGenratorApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/redirect/"
       Policies:
         - S3CrudPolicy:
             BucketName: !Ref S3BUCKETDB
