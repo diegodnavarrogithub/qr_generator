@@ -59,7 +59,7 @@ Resources:
     Properties:
       CodeUri: lambdas/redirect/
       Policies:
-        - S3ReadPolicy:
+        - S3CrudPolicy:
             BucketName: !Ref S3BUCKETDB
       Events:
         RedirectApi:
