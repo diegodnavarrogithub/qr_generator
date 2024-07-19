@@ -93,7 +93,7 @@ Resources:
 Outputs:
   GenerateQrApi:
     Description: "API Gateway endpoint URL for Generate QR Code function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/generate/"
+    Value: !Sub "https://${QrGenratorApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/generate/"
   RedirectApi:
     Description: "API Gateway endpoint URL for Redirect function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/redirect/"
+    Value: !Sub "https://${QrGenratorApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/redirect/"
