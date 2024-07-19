@@ -48,7 +48,7 @@ Resources:
       CodeUri: lambdas/generate_qr/
       Environment:
         Variables:
-          BUCKET_NAME: !Ref S3BUCKETDB
+          REDIRURL: !Sub "https://${QrGenratorApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/redirect/"
       Policies:
         - S3CrudPolicy:
             BucketName: !Ref S3BUCKETDB
