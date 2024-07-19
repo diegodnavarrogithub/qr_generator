@@ -14,17 +14,17 @@ def lambda_handler(event, context):
     logger.info(f"S3 Bucket: {BUCKET}/{KEY}")
     s3 = boto3.client('s3')
     _id = event['queryStringParameters']['id']
-    logger.info(f"Id: {_id}")
+    logger.info(f"Id: {_id}, type: {type(_id)}")
     now = datetime.now()
 
     try:
         response = s3.get_object(Bucket=BUCKET, Key=KEY)
-        body_content = response['Body'].read()
-        all_data = json.loads(body_content)
-        # Logging info
+        data_string = response['Body'].read().decode('utf-8')
+        all_data = json.loads(data_string)
         logger.info(f"All data: {json.dumps(all_data, indent=2)}")
 
         data = all_data.get(_id)
+        logger.info(f"Selected data: {data}")
         if not data:
             return {
                 'statusCode': 404,
@@ -35,13 +35,14 @@ def lambda_handler(event, context):
                 'body': json.dumps('QR code not found')
             }
         url = data["URL"]
-
+        logger.info(f"URL: {url}")
         # Update the LastAccessedAt timestamp
         data['LastAccessedAt'] = now.strftime("%Y-%m-%d")
+        logger.info(f"Updated selected data: {data}")
         s3.put_object(Bucket=BUCKET, Key=KEY, Body=json.dumps(all_data))
-
         # Logging info
-        logger.info(msg="Updated data: ", extra=json.dumps(all_data, indent=2))
+        logger.info("Data saved")
+        logger.info(msg=f"Updated data: {json.dumps(all_data, indent=2)}")
         return {
             'statusCode': 302,
             'headers': {
