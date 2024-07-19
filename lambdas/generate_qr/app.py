@@ -12,9 +12,9 @@ logger.setLevel(logging.INFO)
 def lambda_handler(event, context):
     data = json.loads(event['body'])
     destination_url = data['destination_url']
-    logging.info(data)
+    logger.info(data)
     now = datetime.now()
-    _id = now.strftime("%Y-%m-%d-%H:%M:S.%f")
+    _id = now.strftime("%Y-%m-%d-%H:%M:%S.%f")
     domain_url = f"{data['domain_url']}/redirect/{_id}"
     BUCKET = os.getenv("BUCKET_NAME")
     KEY = os.getenv("S3_KEY")
@@ -24,7 +24,7 @@ def lambda_handler(event, context):
         'URL': destination_url,
         'CreatedAt': now.strftime("%Y-%m-%d")
     }
-    logging.info(msg=f"New data for id ({_id}): {metadata}")
+    logger.info(msg=f"New data for id ({_id}): {metadata}")
     status_code = 500
     try:
         response = s3.get_object(Bucket=BUCKET, Key=KEY)
@@ -34,7 +34,7 @@ def lambda_handler(event, context):
         status_code = 200
 
     except s3.exceptions.NoSuchKey as e:
-        logging.error(e)
+        logger.error(e)
         s3.put_object(Bucket=BUCKET, Key=KEY, Body=json.dumps({
             _id: metadata
         }))
