@@ -35,6 +35,7 @@ def lambda_handler(event, context):
                 'body': json.dumps('QR code not found')
             }
         url = data["URL"]
+        data["timesVisited"] = data.get("timesVisited", 0) + 1
         logger.info(f"URL: {url}")
         # Update the LastAccessedAt timestamp
         data['LastAccessedAt'] = now.strftime("%Y-%m-%d")
