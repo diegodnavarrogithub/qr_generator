@@ -22,6 +22,7 @@ jobs:
       - run:
           name: Update pip
           command: pip install --upgrade pip
+
   deploy:
     docker:
       - image: cimg/python:3.11
@@ -65,17 +66,33 @@ workflows:
       - approval:
           type: approval
           name: start-build
+          filters:
+            branches:
+              only:
+                - main
       - build:
           name: build
           requires:
             - start-build
+          filters:
+            branches:
+              only:
+                - main
       - approval:
           type: approval
           name: prod-approval
           requires:
             - build
+          filters:
+            branches:
+              only:
+                - main
       - deploy:
           name: prod-deploy
           environment: prod
           requires:
             - prod-approval
+          filters:
+            branches:
+              only:
+                - main
