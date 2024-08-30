@@ -12,6 +12,9 @@ Parameters:
   S3KEYDB:
     Type: String
     Description: "The S3 key for the database"
+  SLACKTOKEN:
+    Type: String
+    Description: "The S3 key for the database"
 
 Globals:
   Function:
@@ -25,6 +28,7 @@ Globals:
         ENV_NAME: !Ref EnvNameParam
         BUCKET_NAME: !Ref S3BUCKETDB
         S3_KEY: !Ref S3KEYDB
+        SLACKBOTKEY: !Ref SLACKTOKEN
 
 Resources:
   # Buckets

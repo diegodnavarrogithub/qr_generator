@@ -4,12 +4,16 @@ import os
 from datetime import datetime
 
 import boto3
-from utils import generate_qr_code
+from utils import SlackManager, generate_qr_code
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 def lambda_handler(event, context):
+    # Slack access
+    TOKEN = os.getenv('SLACKBOTKEY')
+    channel = "qrs-delete-status"
+
     BUCKET = os.getenv("BUCKET_NAME")
     KEY = os.getenv("S3_KEY")
     logger.info(f"S3 Bucket: {BUCKET}/{KEY}")
@@ -32,3 +36,8 @@ def lambda_handler(event, context):
         s3.put_object(Bucket=BUCKET, Key=KEY, Body=json.dumps(all_data))
     except Exception as e:
         logger.error(e)
+
+    msg = f"There were {len(to_be_deleted)} deleted records(s)" \
+        if to_be_deleted else "No deleted records"
+    slack_client = SlackManager(channel=channel, token=TOKEN)
+    slack_client.post_message(msg)
