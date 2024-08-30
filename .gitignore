@@ -3,3 +3,6 @@ venv/
 
 # scripts
 clean_branches.sh
+
+# json
+qr_database.json

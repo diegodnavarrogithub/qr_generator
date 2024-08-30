@@ -27,11 +27,12 @@ Globals:
         S3_KEY: !Ref S3KEYDB
 
 Resources:
+  # Buckets
   QrCodeBucket:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: s3-bucket-qr-database
-  
+
   QrGenratorApi:
     Type: AWS::Serverless::Api
     Properties:
@@ -41,7 +42,8 @@ Resources:
         AllowMethods: "'POST,OPTIONS,GET'"
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
         AllowOrigin: "'*'"
-    
+  
+  # Lambda Functions
   GenerateQrFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -74,6 +76,23 @@ Resources:
             RestApiId:
               Ref: QrGenratorApi
 
+  QrCleanupFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambdas/qr_cleanup
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref S3BUCKETDB
+      EventInvokeConfig:
+        MaximumRetryAttempts: 2
+      Events:
+        CronJobEvent:
+          Type: Schedule
+          Properties:
+            Name:
+              Fn::Sub: ${AWS::StackName}-CronEvent
+            Schedule: cron(0 17 ? * 2 *)
+
   QRUtilLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
@@ -86,6 +105,7 @@ Resources:
       RetentionPolicy: Delete
     Metadata:
       BuildMethod: makefile
+      
 
 Outputs:
   GenerateQrApi:
