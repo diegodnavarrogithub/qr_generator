@@ -37,7 +37,7 @@ def lambda_handler(event, context):
     except Exception as e:
         logger.error(e)
 
-    msg = f"There were {len(to_be_deleted)} deleted records(s)" \
+    msg = f"There were {len(to_be_deleted)} deleted record(s)" \
         if to_be_deleted else "No deleted records"
     slack_client = SlackManager(channel=channel, token=TOKEN)
     slack_client.post_message(msg)
