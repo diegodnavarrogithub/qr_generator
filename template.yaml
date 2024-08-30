@@ -105,6 +105,7 @@ Resources:
       RetentionPolicy: Delete
     Metadata:
       BuildMethod: makefile
+      
 
 Outputs:
   GenerateQrApi:
