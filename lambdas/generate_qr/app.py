@@ -58,7 +58,13 @@ def lambda_handler(event, context):
     try:
         response = s3.get_object(Bucket=BUCKET, Key=KEY)
         all_metadata = json.loads(response["Body"].read().decode("utf-8"))
-        all_metadata[_id] = metadata
+        for cur_id, content in all_metadata.items():
+            if destination_url == content.get("URL"):
+                all_metadata[cur_id]["LastAccessedAt"] = now.strftime("%Y-%m-%d")
+                break
+        else:
+            all_metadata[_id] = metadata
+
         s3.put_object(Bucket=BUCKET, Key=KEY, Body=json.dumps(all_metadata))
         status_code = 200
 

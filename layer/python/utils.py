@@ -2,6 +2,7 @@ import base64
 from io import BytesIO
 
 import qrcode
+import slack
 from qrcode.image.styledpil import StyledPilImage
 
 # from qrcode.image.styles.moduledrawers.pil import RoundedModuleDrawer
@@ -33,3 +34,12 @@ def generate_qr_code(data):
     img_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
 
     return img_base64
+
+
+class SlackManager:
+    def __init__(self, channel, token):
+        self.channel = channel
+        self.slack_client = slack.WebClient(token)
+
+    def post_message(self, message):
+        self.slack_client.chat_postMessage(channel=self.channel, text=message)

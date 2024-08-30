@@ -10,3 +10,7 @@ qr_database.json
 # aws
 .aws-sam
 
+
+# txt
+env.txt
+

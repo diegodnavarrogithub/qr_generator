@@ -1,3 +1,4 @@
 pillow
 qrcode
 boto3
+slackclient
